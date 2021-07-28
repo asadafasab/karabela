@@ -1,0 +1,20 @@
+{%extends 'food/base.html'%}
+{%load static%}
+{%block title%}Restaurants{%endblock%}
+{%block content%}
+{%if restaurants%}
+<div class="columns has-text-centered is-desktop is-multiline m-0 p-0">
+    {%for restaurant in restaurants%}
+    <a href="/restaurant/{{restaurant.id}}" class="is-one-quarter-desktop column p-0 m-0">
+        <div class="m-2 round shadow">
+            <img class="round" src="{%static restaurant.photo.url%}" alt="">
+            <p class="title is-4 p-0 w-5">{{restaurant.name}}</p>
+            <p class="subtitle is-5 w-5 pb-2">{{restaurant.address}}</p>
+        </div>
+    </a>
+    {%endfor%}
+</div>
+{%else%}
+<p class="is-title">Curently empty</p>
+{%endif%}
+{%endblock%}

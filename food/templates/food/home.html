@@ -1,0 +1,65 @@
+{%extends "food/base.html"%}
+{%load static%}
+{%block title%}Home{%endblock%}
+{%block content%}
+<div class="image mt-4">
+    <img class="round" src="{%static 'imgs/banner.jpg'%}" alt="">
+    <p class="title has-text-info-light" id="main-title">a page with restaurants</p>
+</div>
+<div class="block is-size-4 mt-5">Popular Dishes</div>
+
+<div class="columns has-text-centered is-desktop is-multiline m-0 p-0">
+    {%for dish in dishes%}
+    <a href="/dish/{{dish.id}}" class="is-one-quarter-desktop column p-0 m-0">
+        <div class="m-2 round shadow">
+            <img class="dish-preview round" src="{%static dish.photo.url%}" alt="">
+            <p class="title is-4 p-0 w-5">{{dish.name}}</p>
+            <p class="subtitle is-5 w-5 pb-2">{{dish.price}} PLN</p>
+        </div>
+    </a>
+    {%endfor%}
+</div>
+
+<div class="block is-size-4">New Dishes</div>
+
+<div class="columns has-text-centered is-desktop is-multiline m-0 p-0">
+    {%for dish in dishes%}
+    <a href="/dish/{{dish.id}}" class="is-one-quarter-desktop column p-0 m-0">
+        <div class="m-2 round shadow">
+            <img class="dish-preview round" src="{%static dish.photo.url%}" alt="">
+            <p class="title is-4 p-0 w-5">{{dish.name}}</p>
+            <p class="subtitle is-5 w-5 pb-2">{{dish.price}} PLN</p>
+        </div>
+    </a>
+    {%endfor%}
+</div>
+
+<div class="block is-size-4">Best Restaurants</div>
+
+<div class="columns has-text-centered is-desktop is-multiline m-0 p-0">
+    {%for restaurant in restaurants%}
+    <a href="/restaurant/{{restaurant.id}}" class="is-one-quarter-desktop column p-0 m-0">
+        <div class="m-2 round shadow">
+            <img class="dish-preview round" src="{%static restaurant.photo.url%}" alt="">
+            <p class="title is-4 p-0 w-5">{{restaurant.name}}</p>
+            <p class="subtitle is-5 w-5 pb-2">{{restaurant.address}}</p>
+        </div>
+    </a>
+    {%endfor%}
+</div>
+
+<div class="block is-size-4">New Restaurants</div>
+
+<div class="columns has-text-centered is-desktop is-multiline m-0 p-0">
+    {%for restaurant in restaurants%}
+    <a href="/restaurant/{{restaurant.id}}" class="is-one-quarter-desktop column p-0 m-0">
+        <div class="m-2 round shadow">
+            <img class="dish-preview round" src="{%static restaurant.photo.url%}" alt="">
+            <p class="title is-4 p-0 w-5">{{restaurant.name}}</p>
+            <p class="subtitle is-5 w-5 pb-2">{{restaurant.address}}</p>
+        </div>
+    </a>
+    {%endfor%}
+</div>
+<p>see more btn</p>
+{%endblock%}

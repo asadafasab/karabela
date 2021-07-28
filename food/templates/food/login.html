@@ -1,0 +1,22 @@
+{%extends 'food/base.html'%}
+{%block title%}Log in or Sign up{%endblock%}
+{%block content%}
+
+<div class="columns is-mobile is-centered mt-4">
+    <div class="column is-8">
+        <div class="tile is-child box">
+            <div class="title has-text-centered">Log in</div>
+            <form action="/login" method="POST">
+                {%csrf_token%}
+                {{form}}
+                {%for message in messages%}
+                <p>{{message}}</p>
+                {%endfor%}
+                <input class="is-fullwidth button is-success" type="submit" value="Log in">
+            </form>
+            <div class="is-size-6 mt-3"><a href="/login">or Sign up</a></div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

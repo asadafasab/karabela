@@ -1,0 +1,25 @@
+{%extends 'food/base.html'%}
+{%block title%}Orders{%endblock%}
+{%block content%}
+{%for order in orders%}
+<div class="box">
+    <p class="is-size-4">Order number: {{order.id}}</p>
+    <p class="">Address {{order.region}}, {{order.city}}, {{order.street}}</p>
+    <p class="">Zip code: {{order.zip}}</p>
+    <p class="">Total: {{order.total}} PLN</p>
+    <p class="mb-5">Status: Payed ({{order.status}})</p>
+    {%for dish in order.dishes%}
+    <div class="isflex">
+        <img class="cart-preview round mt-5" src="{{dish.photo}}" alt="">
+        <div>
+            <p class="is-size-4">{{dish.name}}</p>
+            <p>Quantity: {{dish.quantity}}</p>
+            <p>Price: {{dish.price}} PLN</p>
+        </div>
+    </div>
+    {%endfor%}
+    <button onclick="setOrderStatus({{order.id}},2)" class="button">Preparing</button>
+    <button onclick="setOrderStatus({{order.id}},3)" class="button is-primary">Done</button>
+</div>
+{%endfor%}
+{%endblock%}

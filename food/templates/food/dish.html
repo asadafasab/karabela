@@ -1,0 +1,100 @@
+{%extends "food/base.html"%}
+{%load static%}
+{%block title%}Dish{%endblock%}
+{%block content%}
+<div class="columns m-2 mt-3">
+    <div class="column is-9 p-0">
+        <img src="{%static dish.photo.url%}" alt="" class="m-0 p-0 box">
+    </div>
+    <div class="ml-2 column auto">
+        <a href="/restaurant/{{dish.restaurant.id}}">
+            <p class="title is-4 has-text-dark">by {{dish.restaurant.name}}</p>
+        </a>
+        <p class="is-6 mb-2 mt-2">
+            <i class="fas fa-star"></i>
+            {%if avg%}
+            {{avg}}/5 product's rating
+            {%else%}
+            no reviews yet
+            {%endif%}
+        </p>
+        <p class="subtitle mt-5 mb-0">Allergens</p>
+        <p>eggs</p>
+        <p>peanuts</p>
+        <p>milk</p>
+        <p class="subtitle is-4 mt-4 mb-4">{{dish.price}} PLN</p>
+
+        <div class="is-flex mb-5">
+            <button class="button is-primary is-outlined mr-2" onclick="changeQuantity(-1)">-</button>
+            <input class="input pr-0 is-primary" style="width:2.9rem;" id="inputQuantity" type="number" min="1" max="63"
+                value="1">
+            <button class="button is-primary is-outlined ml-2 " onclick="changeQuantity(1)">+</button>
+        </div>
+        <button class="pl-5 pr-5 mb-2 button is-primary" onclick="addToCart({{dish.id}})">Add to cart</button>
+        {%if request.user == dish.restaurant.owner%}
+        <button class="button is-primary mb-2" id="add-new-dish-btn">
+            <i class="fas fa-edit mr-2"></i>
+            Edit
+        </button>
+        <button onclick="deleteDish({{dish.id}})" class="button is-danger " id="delete-dish-btn">
+            <i class="fas fa-trash-alt mr-2"></i>
+            Delete
+        </button>
+        <div class="notification pop-up hide" id="add-new-dish">
+            <button class="delete" id="hide-popup-btn"></button>
+            <form action="/management/d/{{dish.id}}" method="POST" enctype="multipart/form-data">
+                <p class="title is-4">Add new dish</p>
+                {%csrf_token%}
+                {{formDish.name}}
+                {{formDish.price}}
+                <div class="hide">
+                    {{formDish.restaurant}}
+                </div>
+                {{formDish.description}}
+                {{formDish.photo}}
+                <input type="submit" value="Add" class="is-primary button">
+            </form>
+        </div>
+        {%endif%}
+    </div>
+</div>
+<div class="columns m-2 mt-3">
+    <div class="column box m-0">
+        <p class="title m-2">{{dish.name}}</p>
+        <p class="subtitle m-2">{{dish.description}}</p>
+    </div>
+</div>
+{%if user.is_authenticated%}
+<div class="box m-2">
+    <form action="" method="post">
+        {%csrf_token%}
+        <div class="hide">
+            {{form.user}}
+            {{form.dish}}
+            {{form.score}}
+        </div>
+        {{form.text}}
+        <div class="is-flex title is-3">
+            <i id="all-star-btn" class="far fa-star"></i>
+            <i id="all-star-btn" class="far fa-star"></i>
+            <i id="all-star-btn" class="far fa-star"></i>
+            <i id="all-star-btn" class="far fa-star"></i>
+            <i id="all-star-btn" class="far fa-star"></i>
+        </div>
+        <input class="is-fullwidth button is-primary" type="submit" value="Post">
+    </form>
+</div>
+{%endif%}
+<p class="title ml-2 mt-4">Reviews</p>
+<div class="m-2">
+    {%for review in reviews%}
+    <div class="box is-3 p-5">
+        <strong class="title is-5"><i class="fas fa-user"></i>
+            {{review.user}}</strong>
+        <i class="ml-3 fas fa-star"></i>
+        {{review.score}}/5
+        <p>{{review.text}}</p>
+    </div>
+    {%endfor%}
+</div>
+{%endblock%}

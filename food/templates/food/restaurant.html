@@ -1,0 +1,108 @@
+{%extends 'food/base.html'%}
+{%load static%}
+{%block title%}Restaurants{%endblock%}
+{%block content%}
+<div class="columns m-0 mt-3 mb-4">
+    <div class="column p-0">
+        <img class="round m-0 m-0" src="{%static info.photo.url%}" alt="">
+    </div>
+    <div class="ml-2 column auto">
+        <p class="title is-5 mb-0">{{info.name}}</p>
+        <p class="is-6">
+            <i class="fas mr-2 fa-map-marker-alt" aria-hidden="true"></i>
+            {{info.address}}
+        </p>
+        <p class="is-6">
+            <i class="fas fa-pen mr-2"></i>
+            {{reviewCount}} reviews
+        </p>
+        <p class="is-6 mb-4">
+            <i class="fas fa-thumbs-up mr-2" aria-hidden="true"></i>
+            {{ratio}}% positive
+        </p>
+        <p class="subtitle">
+            {{info.description}}
+        </p>
+    </div>
+</div>
+
+<div class="ml-2 title">
+    Dishes
+</div>
+<div class="columns has-text-centered is-desktop is-multiline m-0 p-0">
+    {%for dish in dishes%}
+    <a href="/dish/{{dish.id}}" class="is-one-quarter-desktop column p-0 m-0">
+        <div class="m-2 round shadow">
+            <img class="dish-preview round" src="{%static dish.photo.url%}" alt="">
+            <p class="title is-4 p-0 w-5">{{dish.name}}</p>
+            <p class="subtitle is-5 w-5 pb-2">{{dish.price}} PLN</p>
+        </div>
+    </a>
+    {%endfor%}
+    {%if request.user == info.owner%}
+    <div class="column has-text-centered round is-desktop is-multiline m-0 p-0" style="cursor: pointer;"
+        id="add-new-dish-btn">
+        <div class="is-flex is-flex-direction-column">
+            <i class="fas fa-plus fa-5x p-6"></i>
+            <p class="title is-4 pb-0">Add new dish</p>
+        </div>
+    </div>
+    {%endif%}
+</div>
+
+{%if formEditReview%}
+<div class="box m-2">
+    <form action="" method="post">
+        {%csrf_token%}
+        {{formEditReview.text}}
+        <div class="hide">
+            {{formEditReview.restaurant}}
+            {{formEditReview.user}}
+            {{formEditReview.recommendation}}
+        </div>
+        <p class="subtitle is-5">Do you recomend this restaurant?</p>
+
+        <div class="button is-medium is-inverted" id="recomend-btn">
+            <i class="fas fa-thumbs-up mr-2" aria-hidden="true"></i> Yep
+        </div>
+        <div class="button is-medium is-inverted" id="dont-recomend-btn">
+            <i class="fas fa-thumbs-down mr-2"></i> Nope
+        </div>
+        <br>
+        <input class="mt-3 button is-primary" type="submit" value="Post">
+    </form>
+</div>
+{%endif%}
+<div class="m-2">
+    {%for review in reviews%}
+    <div class="box is-3 p-5">
+        <strong class="title is-5 mr-3"><i class="fas fa-user"></i>
+            {{review.user}}</strong>
+        {%if review.recommendation%}
+        <i class="fas fa-thumbs-up"></i>
+        Recommended
+        {%else%}
+        <i class="fas fa-thumbs-down"></i>
+        Not Recommended
+        {%endif%}
+        <p>{{review.text}}</p>
+    </div>
+    {%endfor%}
+</div>
+
+<div class="notification pop-up hide" id="add-new-dish">
+    <button class="delete" id="hide-popup-btn"></button>
+    <form action="/adddish" method="POST" enctype="multipart/form-data">
+        <p class="title is-4">Add new dish</p>
+        {%csrf_token%}
+        {{formDish.name}}
+        {{formDish.price}}
+        <div class="hide">
+            {{formDish.restaurant}}
+        </div>
+        {{formDish.description}}
+        {{formDish.photo}}
+        <input type="submit" value="Add" class="is-primary button">
+    </form>
+</div>
+{%endblock%}

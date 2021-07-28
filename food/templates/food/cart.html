@@ -1,0 +1,36 @@
+{%extends 'food/base.html'%}
+{%load static%}
+{%block title%}Cart{%endblock%}
+{%block content%}
+<script src="{%static 'js/cart.js'%}"></script>
+<div id="loading-btn" class="button is-loading is-large mt-6" style="border: 0;cursor: text;">
+    Your cart is empty.
+</div>
+<div id="cart-table" class="hide">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+    <div class="columns m-2">
+        <div class="column is-size-5">
+            Total:
+            <p id="cart-total-price">0 PLN</p>
+        </div>
+        <div class="column">
+            <a href="/address" class="mt-4 button is-primary">Addres and info</a>
+        </div>
+    </div>
+</div>
+
+{%csrf_token%}
+{%endblock%}

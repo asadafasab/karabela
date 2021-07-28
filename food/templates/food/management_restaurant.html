@@ -1,0 +1,18 @@
+{%extends "food/base.html"%}
+{%load static%}
+{%block title%}Management{%endblock%}
+{%block content%}
+
+<form action="/management/r/{{id}}" class="box mb-6" method="POST" enctype="multipart/form-data">
+    {%csrf_token%}
+    {{form.name}}
+    {{form.address}}
+    {{form.description}}
+    <p class="mb-2">Background Image</p>
+    {{form.photo}}
+    <div class="hide">
+        {{form.owner}}
+    </div>
+    <input type="submit" value="Update" class="is-fullwidth is-primary button">
+</form>
+{%endblock%}

@@ -1,0 +1,91 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karabela | {% block title %}{%endblock%}</title>
+    <script src="{%static 'js/main.js'%}"></script>
+    <link rel="icon" type="image/png" href="{%static 'imgs/favicon.png'%}" />
+    <link rel="stylesheet" href="{%static 'css/main.css'%}">
+    <script src="https://kit.fontawesome.com/0ea288a503.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="{%static '/imgs/logo.png'%}" width="112" height="28">
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="/">
+                    Home
+                </a>
+                <a class="navbar-item" href="/restaurants">
+                    Restaurants
+                </a>
+                <a class="navbar-item" href="/management">
+                    My account
+                </a>
+            </div>
+            <div class="navbar-end">
+                {% if user.is_authenticated %}
+                <div class="navbar-item">
+                    <span class="mr-4">Hello, {{request.user}}</span>
+                    <a class="navbar-item" href="/cart">
+                        <i class="fas fa-shopping-cart fa-2x"></i>
+                    </a>
+                    <a class="button is-light" href="/logout">
+                        Log out
+                    </a>
+                </div>
+                {%else%}
+                <div class="navbar-item">
+                    <a class="navbar-item" href="/cart">
+                        <i class="fas fa-shopping-cart fa-2x"></i>
+                    </a>
+                    <div class="buttons">
+                        <a class="button is-light" href="/signup">
+                            Sign up
+                        </a>
+                        <a class="button is-light" href="/login">
+                            Log in
+                        </a>
+                    </div>
+                </div>
+                {%endif%}
+            </div>
+        </div>
+    </nav>
+    {%for message in messages%}
+    <div class="notification is-primary is-light">
+        {{message}}
+    </div>
+    {%endfor%}
+    <div class="container">
+        {%block content%} {%endblock%}
+    </div>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Karabela</strong> by me...
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>

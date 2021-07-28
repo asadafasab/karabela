@@ -1,0 +1,64 @@
+{%extends "food/base.html"%}
+{%load static%}
+{%block title%}Management{%endblock%}
+{%block content%}
+{%if orders%}
+<p class="title">Orders</p>
+{%for order in orders%}
+<div class="box">
+    <p class="is-size-3">Order number: {{order.id}}</p>
+    <p class="is-size-5">Total: {{order.total}} PLN</p>
+    <p class="is-size-6 mb-5">Status: {{order.status}}</p>
+
+    {%for dish in order.dishes%}
+    <div class="is-flex mt-2">
+        <img class="round cart-preview" src="{{dish.photo}}" alt="">
+        <div class="ml-2">
+            <p class="is-size-4 ">
+                <a class="has-text-dark" href="/dish/{{dish.id}}">
+                    {{dish.name}}
+                </a>
+            </p>
+            <p class="is-size-5">{{dish.quantity}}x {{dish.price}} PLN</p>
+        </div>
+    </div>
+    {%endfor%}
+</div>
+{%endfor%}
+{%endif%}
+{%if restaurants%}
+<div class="columns is-multiline has-text-centered">
+    {%for restaurant in restaurants%}
+    <div class="column is-full mb-4">
+        <img class="dish-tile round" src="{%static restaurant.photo.url%}" alt="">
+        <p class="title is-4 p-0 w-5">{{restaurant.name}}</p>
+        <p class="subtitle is-5 w-5">{{restaurant.address}}</p>
+        <a href="restaurant/{{restaurant.id}}" class="button mr-2">
+            <i class="fas fa-external-link-alt"></i>
+            Open
+        </a>
+        <a href="management/r/{{restaurant.id}}" class="button">
+            <i class="fas fa-edit mr-2"></i>
+            Edit
+        </a>
+        <button onclick="deleteRestaurant({{restaurant.id}})" class="ml-2 button is-danger" id="delete-dish-btn">
+            <i class="fas fa-trash-alt mr-2"></i>
+            Delete
+        </button>
+    </div>
+    {%endfor%}
+</div>
+{%endif%}
+<form action="/management" class="box mb-6" method="POST" enctype="multipart/form-data">
+    {%csrf_token%}
+    {{formRestaurant.name}}
+    {{formRestaurant.address}}
+    {{formRestaurant.description}}
+    <p class="mb-2">Background Image</p>
+    {{formRestaurant.photo}}
+    <div class="hide">
+        {{formRestaurant.owner}}
+    </div>
+    <input type="submit" value="Add new restaurant" class="is-fullwidth is-primary button">
+</form>
+{%endblock%}
