@@ -146,8 +146,7 @@ def dish(request, id):
     }
 
     if request.user.is_authenticated:
-        review = OpinionDish.objects.filter(
-            user=request.user, dish=dish_).first()
+        review = OpinionDish.objects.filter(user=request.user, dish=dish_).first()
         fill = {"user": request.user, "dish": dish_}
         if review:
             fill["text"] = review.text
@@ -197,26 +196,6 @@ def management(request):
     if orders:
         orders_obj = get_orders(orders)
 
-        # orders_list = []
-        # for order in orders:
-        #     dish = []
-        #     total = 0.0
-        #     for id_ in order.dishes:
-        #         dish_ = Dish.objects.get(id=int(id_))
-        #         total += (float(dish_.price)*order.dishes[id_])
-        #         dish.append({
-        #             "price": float(dish_.price),
-        #             "quantity": order.dishes[id_],
-        #             "photo": dish_.photo.url,
-        #             "name": dish_.name,
-        #             "id": dish_.id,
-        #         })
-
-        #     orders_list.append({
-        #         "id": order.id,
-        #         "dishes": dish,
-        #         "total": total
-        #     })
         context["orders"] = orders_obj
     return render(request, "food/management.html", context)
 
@@ -308,8 +287,10 @@ def get_cart(request):
 
 def set_order_status(request):
     body = json.loads(request.body.decode("utf-8"))
-    print(body)
-    id_, status = int(body["id"]), int(body["status"]),
+    id_, status = (
+        int(body["id"]),
+        int(body["status"]),
+    )
     Order.objects.get(id=id_).update(status=status)
     return JsonResponse({"ok": True})
 
@@ -320,17 +301,21 @@ def address(request):
         if form.is_valid():
             form.save()
             messages.info(request, "Congratulations. Order completed")
+            if not request.user.id:
+                return redirect("home")
             return redirect("management")
-        messages.info(request, "Something went wrong")
+        messages.info(request, "Something went wrong.")
 
-    form = CreateOrder({"user": request.user, "dishes": "{}"})
+        print(form.errors.values(), "\n\n")
+
+    form = CreateOrder()
     return render(request, "food/address.html", {"form": form})
 
 
 def restaurant_orders(request, id):
     restaurant = Restaurant.objects.get(id=id)
     restaurant_dishes = Dish.objects.filter(restaurant=restaurant)
-    ids = [f"{d.id}"for d in restaurant_dishes]
+    ids = [f"{d.id}" for d in restaurant_dishes]
     orders = Order.objects.filter(dishes__has_keys=ids)
 
     orders_obj = get_orders(orders)
@@ -344,22 +329,26 @@ def get_orders(obj):
         dishes = []
         for id_ in order.dishes:
             dish_ = Dish.objects.get(id=int(id_))
-            total += (float(dish_.price)*order.dishes[id_])
-            dishes.append({
-                "price": float(dish_.price),
-                "quantity": order.dishes[id_],
-                "photo": dish_.photo.url,
-                "name": dish_.name,
-                "id": dish_.id,
-            })
-        orders_list.append({
-            "id": order.id,
-            "region": order.region_address,
-            "city": order.city_address,
-            "street": order.street_address,
-            "zip": order.zip_code,
-            "dishes": dishes,
-            "total": total,
-            "status": order.status
-        })
+            total += float(dish_.price) * order.dishes[id_]
+            dishes.append(
+                {
+                    "price": float(dish_.price),
+                    "quantity": order.dishes[id_],
+                    "photo": dish_.photo.url,
+                    "name": dish_.name,
+                    "id": dish_.id,
+                }
+            )
+        orders_list.append(
+            {
+                "id": order.id,
+                "region": order.region_address,
+                "city": order.city_address,
+                "street": order.street_address,
+                "zip": order.zip_code,
+                "dishes": dishes,
+                "total": total,
+                "status": order.status,
+            }
+        )
     return orders_list

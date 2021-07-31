@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('food', '0011_order_status'),
+        ("food", "0011_order_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='status',
-            field=models.PositiveIntegerField(null=True, validators=[django.core.validators.MaxValueValidator(2)]),
+            model_name="order",
+            name="status",
+            field=models.PositiveIntegerField(
+                null=True, validators=[django.core.validators.MaxValueValidator(2)]
+            ),
         ),
     ]

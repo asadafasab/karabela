@@ -8,8 +8,7 @@ from django.db import models
 
 class Restaurant(models.Model):
     name = models.CharField(max_length=300)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL,
-                              on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     address = models.CharField(max_length=256)
     description = models.CharField(max_length=400)
     photo = models.ImageField(upload_to="bg")
@@ -30,8 +29,7 @@ class Dish(models.Model):
 
 
 class OpinionRestaurant(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.CharField(max_length=512)
     recommendation = models.BooleanField()
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
@@ -41,8 +39,7 @@ class OpinionRestaurant(models.Model):
 
 
 class OpinionDish(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.CharField(max_length=512)
     score = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
@@ -54,12 +51,12 @@ class OpinionDish(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True
+    )
     # status of the order
     # default/not payed (0, None),payed(1), doing (2), complete (3)
-    status = models.PositiveIntegerField(
-        validators=[MaxValueValidator(3)], null=True)
+    status = models.PositiveIntegerField(validators=[MaxValueValidator(3)], null=True)
     dishes = models.JSONField()
     region_address = models.CharField(max_length=128)
     city_address = models.CharField(max_length=128)

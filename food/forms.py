@@ -175,34 +175,33 @@ class CreateDishOpinion(ModelForm):
 class CreateOrder(ModelForm):
     class Meta:
         model = Order
-        fields = "__all__"
+        fields = [
+            "user",
+            "region_address",
+            "city_address",
+            "street_address",
+            "zip_code",
+            "dishes",
+        ]
         widgets = {
             "region_address": forms.TextInput(
                 attrs={
                     "class": "input",
                     "type": "text",
-                    "placeholder": "Region/State/Province"
+                    "placeholder": "Region/State/Province",
                 }
             ),
             "city_address": forms.TextInput(
-                attrs={
-                    "class": "input",
-                    "type": "text",
-                    "placeholder": "City"
-                }
+                attrs={"class": "input", "type": "text", "placeholder": "City"}
             ),
             "street_address": forms.TextInput(
                 attrs={
                     "class": "input",
                     "type": "text",
-                    "placeholder": "Street and number of smth"
+                    "placeholder": "Street and number of smth",
                 }
             ),
             "zip_code": forms.TextInput(
-                attrs={
-                    "class": "input",
-                    "type": "text",
-                    "placeholder": "Zip code"
-                }
+                attrs={"class": "input", "type": "text", "placeholder": "Zip code"}
             ),
         }

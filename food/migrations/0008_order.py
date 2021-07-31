@@ -10,21 +10,41 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('food', '0007_auto_20210720_1056'),
+        ("food", "0007_auto_20210720_1056"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('dishes', models.JSONField()),
-                ('total_price', models.FloatField(validators=[django.core.validators.MinValueValidator(0)])),
-                ('region_address', models.CharField(max_length=128)),
-                ('city_address', models.CharField(max_length=128)),
-                ('street_address', models.CharField(max_length=128)),
-                ('zip_code', models.CharField(max_length=5)),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("dishes", models.JSONField()),
+                (
+                    "total_price",
+                    models.FloatField(
+                        validators=[django.core.validators.MinValueValidator(0)]
+                    ),
+                ),
+                ("region_address", models.CharField(max_length=128)),
+                ("city_address", models.CharField(max_length=128)),
+                ("street_address", models.CharField(max_length=128)),
+                ("zip_code", models.CharField(max_length=5)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
