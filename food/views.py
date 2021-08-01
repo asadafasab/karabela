@@ -1,3 +1,5 @@
+"""Contains view functions"""
+
 import json
 
 from django.shortcuts import render, redirect
@@ -21,6 +23,7 @@ from .forms import (
 
 
 def home(request):
+    """Home page. Roure for '' and 'home'."""
     dishes = Dish.objects.all()[:10]
     restaurants = Restaurant.objects.all()[:10]
 
@@ -29,6 +32,11 @@ def home(request):
 
 
 def sign_up(request):
+    """
+    Sign up page. Roure for 'signup'.
+    Creates new user (or smth).
+    """
+
     if request.user.is_authenticated:
         return redirect("/")
     form = CreateUserForm()
@@ -44,6 +52,8 @@ def sign_up(request):
 
 
 def log_in(request):
+    """Log in page. Roure for 'login'."""
+
     if request.user.is_authenticated:
         return redirect("/")
     form = LoginForm()
@@ -63,22 +73,34 @@ def log_in(request):
 
 @login_required(login_url="login")
 def log_out(request):
+    """Log out page. Roure for 'logout'."""
     logout(request)
     messages.info(request, "Logged out")
     return redirect("login")
 
 
 def cart(request):
+    """Cart page. Roure for 'cart'."""
     return render(request, "food/cart.html", {})
 
 
 def restaurants(request):
+    """
+    Page with all restaurants (from db).
+    Roure for 'restaurants'.
+    """
+
     query = Restaurant.objects.all()
     context = {"restaurants": query}
     return render(request, "food/restaurants.html", context)
 
 
 def restaurant(request, id):
+    """
+    Page of a specific restaurant.
+    Can create new review of a restaurant
+    Roure for 'restaurant/<int:id>'.
+    """
     restaurant_ = Restaurant.objects.get(id=id)
     dishes = Dish.objects.filter(restaurant=id)
     reviews = OpinionRestaurant.objects.filter(restaurant=restaurant_)
@@ -133,6 +155,11 @@ def restaurant(request, id):
 
 
 def dish(request, id):
+    """
+    Page of a specific dish.
+    Can create new review of a dish
+    Roure for 'dish/<int:id>'.
+    """
     dish_ = Dish.objects.get(id=id)
     reviews_dish = OpinionDish.objects.filter(dish=id)
     score_avg = reviews_dish.aggregate(Avg("score"))["score__avg"]
@@ -177,6 +204,11 @@ def dish(request, id):
 
 @login_required(login_url="login")
 def management(request):
+    """
+    Page for restaurant management.
+    Can create new restaurant.
+    Roure for 'management'.
+    """
     if request.method == "POST":
         form = CreateRestaurant(request.POST, request.FILES)
         if form.is_valid():
@@ -202,11 +234,13 @@ def management(request):
 
 @login_required(login_url="login")
 def add_dish(request):
+    """Add dish. Roure for 'adddish'."""
     if request.method == "POST":
         form = CreateDish(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.info(request, "Added new dish")
+            messages.info(request, "Added new dish.")
+        messages.info(request, "Something went wrong.")
 
     id_ = request.POST["restaurant"]
     return redirect(f"/restaurant/{id_}")
@@ -214,6 +248,10 @@ def add_dish(request):
 
 @login_required(login_url="login")
 def update_restaurant(request, id):
+    """
+    Update restaurant data page.
+    Roure for 'management/r/<int:id>'.
+    """
     query = Restaurant.objects.filter(id=id).first()
     if request.method == "POST":
         form = CreateRestaurant(request.POST, request.FILES, instance=query)
@@ -236,6 +274,10 @@ def update_restaurant(request, id):
 
 @login_required(login_url="login")
 def update_dish(request, id):
+    """
+    Update dish data page.
+    Roure for 'management/d/<int:id>'.
+    """
     if request.method == "POST":
         dish = Dish.objects.filter(id=id).first()
         form = CreateDish(request.POST, request.FILES, instance=dish)
@@ -247,6 +289,10 @@ def update_dish(request, id):
 
 @login_required(login_url="login")
 def delete_dish(request, id):
+    """
+    Delete restaurant.
+    Roure for 'remove/r/<int:id>'.
+    """
     dish = Dish.objects.get(id=id)
     rid = dish.restaurant.id
     dish.delete()
@@ -257,6 +303,10 @@ def delete_dish(request, id):
 
 @login_required(login_url="login")
 def delete_restaurant(request, id):
+    """
+    Delete dish.
+    Roure for 'remove/d/<int:id>'.
+    """
     Restaurant.objects.get(id=id).delete()
     messages.info(request, "Deleted")
 
@@ -264,6 +314,10 @@ def delete_restaurant(request, id):
 
 
 def get_cart(request):
+    """
+    Returns JSON data of the cart.
+    Roure for 'get-cart'.
+    """
     body = json.loads(request.body.decode("utf-8"))
     data = {}
     if "cart" in body:
@@ -285,7 +339,12 @@ def get_cart(request):
     return JsonResponse(data)
 
 
+@login_required(login_url="login")
 def set_order_status(request):
+    """
+    Sets status of the order.
+    Roure for 'order-status'.
+    """
     body = json.loads(request.body.decode("utf-8"))
     id_, status = (
         int(body["id"]),
@@ -296,6 +355,10 @@ def set_order_status(request):
 
 
 def address(request):
+    """
+    Creates an order.
+    Roure for 'address'.
+    """
     if request.method == "POST":
         form = CreateOrder(request.POST)
         if form.is_valid():
@@ -306,13 +369,15 @@ def address(request):
             return redirect("management")
         messages.info(request, "Something went wrong.")
 
-        print(form.errors.values(), "\n\n")
-
     form = CreateOrder()
     return render(request, "food/address.html", {"form": form})
 
 
 def restaurant_orders(request, id):
+    """
+    Lists all of the orders placed at the restaurant.
+    Route for 'restaurant/<int:id>/orders'
+    """
     restaurant = Restaurant.objects.get(id=id)
     restaurant_dishes = Dish.objects.filter(restaurant=restaurant)
     ids = [f"{d.id}" for d in restaurant_dishes]
@@ -323,6 +388,9 @@ def restaurant_orders(request, id):
 
 
 def get_orders(obj):
+    """
+    Function for creating a dictionary of the given dishes.
+    """
     orders_list = []
     for order in obj:
         total = 0.0

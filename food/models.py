@@ -1,5 +1,3 @@
-import json
-
 from django.conf import settings
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
@@ -7,6 +5,16 @@ from django.db import models
 
 
 class Restaurant(models.Model):
+    """
+    Model for creating a restaurant.
+    Fields:
+        name
+        owner
+        address
+        description
+        photo
+    """
+
     name = models.CharField(max_length=300)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     address = models.CharField(max_length=256)
@@ -18,6 +26,16 @@ class Restaurant(models.Model):
 
 
 class Dish(models.Model):
+    """
+    Model for creating a dish.
+    Fields:
+        name
+        price
+        restaurant
+        description
+        photo
+    """
+
     name = models.CharField(max_length=300)
     price = models.DecimalField(max_digits=4, decimal_places=2)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
@@ -29,6 +47,15 @@ class Dish(models.Model):
 
 
 class OpinionRestaurant(models.Model):
+    """
+    Model for creating a review of the restaurant.
+    Fields:
+        user
+        text (review)
+        recommendation (score)
+        restaurant
+    """
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.CharField(max_length=512)
     recommendation = models.BooleanField()
@@ -39,6 +66,15 @@ class OpinionRestaurant(models.Model):
 
 
 class OpinionDish(models.Model):
+    """
+    Model for creating a review of the dish.
+    Fields:
+        user
+        text (review)
+        recommendation (score)
+        restaurant
+    """
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.CharField(max_length=512)
     score = models.PositiveIntegerField(
@@ -51,6 +87,17 @@ class OpinionDish(models.Model):
 
 
 class Order(models.Model):
+    """
+    Model for creating an order.
+    Fields:
+        user (optional)
+        dishes (JSON)
+        region_address
+        city_address
+        street_address
+        zip_code
+    """
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True
     )
