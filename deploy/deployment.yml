@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karabela-deployment
+  labels:
+    app: karabela
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: karabela
+  template:
+    metadata:
+      labels:
+        app: karabela
+    spec:
+      containers:
+        - image: karabela:latest
+          name: karabela
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8001
+          env:
+            - name: POSTGRES_DB
+              value: "karabela"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: user
+            - name: DATABASE_URL
+              value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: karabela-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8001
+  selector:
+    name: karabela
